@@ -27,5 +27,4 @@ pytorch의 nn.Module을 사용해 직접 구현
 - 분류용 손실 함수 : nn.CrossEntropyLoss()
 - 평가 지표 : 정확도(Accuracy)
 
-컴퓨터비전 데이터셋?
-https://www.nexdata.ai/datasets/computervision?page=2
+
