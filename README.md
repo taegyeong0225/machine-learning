@@ -1,4 +1,6 @@
 # machine-learning 프로젝트
+pytorch의 nn.Module을 사용해 직접 구현
+
 ## 주제 1.  한식 이미지 분류기 (Korean Food Classifier)
 ### 데이터 수집 : https://aihub.or.kr/aihubdata/data/view.do?dataSetSn=79
 - CNN 기반 이미지 분류 모델 (ResNet, EfficientNet, ViT)
