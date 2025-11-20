@@ -1,6 +1,234 @@
 # machine-learning 프로젝트
 pytorch의 nn.Module을 사용해 직접 구현
 
+# 🔤 Spell Correction Seq2Seq Model (PyTorch)
+
+PyTorch 기반 Encoder–Decoder 구조를 사용해 **오타가 포함된 문장을 자동으로 교정하는 Seq2Seq 모델**입니다.
+LSTM 기반 Encoder–Decoder와 Attention 메커니즘을 통해 문장 단위의 오타를 교정하는 NLP 프로젝트입니다.
+
+---
+
+## 📌 프로젝트 개요
+
+사용자가 입력한 문장에서 발생하는 철자 오류(typo)를 자동으로 수정하는 딥러닝 모델을 구현합니다.
+비정형 텍스트 데이터를 기반으로 **오타 문장 → 정상 문장** 형태의 병렬 데이터를 구성하고,
+PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능을 수행합니다.
+
+---
+
+## 🎯 프로젝트 목표
+
+- PyTorch로 **Encoder–Decoder 기반 Seq2Seq 모델 직접 구현**
+- 정상 문장 데이터를 기반으로 **Synthetic typo 데이터 생성**
+- Teacher Forcing 및 Attention 적용
+- 모델의 forward 흐름을 **top-down 구조로 시각적으로 설명 가능**하도록 구현
+- 문장 단위 오타 교정 모델 완성
+
+---
+
+## 📂 폴더 구조
+
+project/
+
+├── data/
+
+│    ├── raw/               # 원본 텍스트 (AG News, TED 등)
+
+│    ├── processed/         # 토크나이즈/벡터화된 데이터
+
+│    └── typo/              # 오타 합성 후 병렬 데이터
+
+│
+
+├── src/
+
+│    ├── dataset.py         # Dataset, Dataloader 정의
+
+│    ├── model.py           # Encoder, Decoder, Attention 모듈
+
+│    ├── train.py           # 학습 루프
+
+│    ├── evaluate.py        # 평가 및 BLEU/CER 계산
+
+│    ├── utils.py           # 토크나이저, 오타 생성 모듈
+
+│    └── config.py          # 하이퍼파라미터 정의
+
+│
+
+├── notebooks/
+
+│    └── EDA_and_Preprocessing.ipynb
+
+│
+
+├── saved_models/
+
+│
+
+├── README.md
+
+└── requirements.txt
+
+---
+
+## 🧪 데이터셋
+
+### ✔ 원본 문장 데이터
+- **AG News**, **TED Talks**, **Wikipedia Sentences** 등
+- 짧고 자연스러운 영어 문장 기반
+
+### ✔ 오타 합성(Synthetic Typo Generation)
+오타 생성 규칙:
+- 문자 삭제 (deletion)
+- 문자 교체 (substitution)
+- 인접 문자로 치환 (neighbor typo)
+- 중복 삽입 (duplication)
+- 임의 문자 삽입 (insertion)
+
+예시:
+
+Input: “This is a sample sentence.”
+
+Typo : “Ths is a sampl seentence.”
+
+Synthetic parallel dataset이므로 학습 데이터가 무한하게 생성 가능.
+
+---
+
+## 🧠 모델 구조
+
+### ✔ 기본 Seq2Seq 아키텍처
+
+[Embedding]
+
+↓
+
+[Encoder LSTM]
+
+↓
+
+[Context Vector]
+
+↓
+
+[Decoder LSTM]
+
+↓
+
+[Linear → Softmax]
+
+### ✔ Attention 적용 버전
+
+Input Sentence
+
+↓
+
+Embedding
+
+↓
+
+Encoder LSTM
+
+↓
+
+Attention Layer
+
+↓
+
+Decoder LSTM
+
+↓
+
+Output Tokens
+
+---
+
+## 🔧 주요 PyTorch 구성 요소
+- `nn.Embedding`
+- `nn.LSTM`
+- `nn.Linear`
+- `nn.CrossEntropyLoss`
+- `nn.Module` 기반 Encoder/Decoder
+- Teacher Forcing
+- Custom Dataset, Collate Function
+- Greedy Decoding or Beam Search
+
+---
+
+## ▶ 실행 방법
+
+### 1) 패키지 설치
+
+pip install -r requirements.txt
+
+### 2) 데이터 준비 및 오타 생성
+
+python src/utils.py –create-typo-data
+
+### 3) 학습
+
+python src/train.py
+
+### 4) 평가
+
+python src/evaluate.py
+
+### 5) 데모 실행
+
+python demo.py
+
+---
+
+## 📈 모델 평가 지표
+- Character-level Accuracy
+- Word-level Accuracy
+- BLEU Score
+- CER (Character Error Rate)
+- Attention Heatmap 시각화
+
+---
+
+## 📊 결과 예시
+
+| 입력(오타 문장) | 출력(모델 교정) | 정답 |
+|----------------|------------------|-------|
+| `Ths is smple.` | `This is simple.` | `This is simple.` |
+| `I lov pytoch.` | `I love pytorch.` | `I love pytorch.` |
+
+---
+
+## 📅 개발 일정 (4주)
+
+### ✔ 1주차 : 데이터 수집 & 오타 생성 모듈 구현
+### ✔ 2주차 : 기본 Seq2Seq 구현 및 학습
+### ✔ 3주차 : Attention 및 성능 향상
+### ✔ 4주차 : 모델 튜닝, 평가, 보고서/PPT 완성
+
+---
+
+## 📌 향후 확장 가능성
+- Transformer 기반 Spell Correction
+- Beam Search 적용
+- 한국어 오타 교정 모델로 확장
+- 실시간(online) correction 서비스 API 구축
+
+---
+
+## 📧 문의
+궁금한 부분은 언제든지 질문해주세요!
+
+---
+- requirements.txt 자동 생성
+
+- README에 들어갈 아키텍처 다이어그램(Mermaid) 제작
+
+- 전체 프로젝트 파일 생성
+
+
+<details>
+  <summary>주제 후보였던 것</summary>
+  
 ## 주제 1.  한식 이미지 분류기 (Korean Food Classifier)
 ### 사진을 입력 받아, 이게 어떤 음식인지 분류하는 모델 
 - 입력: 음식 이미지, 출력: 음식명 (예: 비빔밥, 김치찌개, 불고기 등))
@@ -26,5 +254,9 @@ pytorch의 nn.Module을 사용해 직접 구현
 - 구현 방법 : Hugging Face의 BERT 모델을 '기반(Base)'으로 가져온 뒤, 그 위에 '분류용 헤드(Head)' 레이어를 nn.Module을 사용해 직접 구현
 - 분류용 손실 함수 : nn.CrossEntropyLoss()
 - 평가 지표 : 정확도(Accuracy)
+
+</details>
+
+
 
 
