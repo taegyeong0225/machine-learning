@@ -1,7 +1,7 @@
 # machine-learning 프로젝트
 pytorch의 nn.Module을 사용해 직접 구현
 
-# 🔤 Spell Correction Seq2Seq Model (PyTorch)
+# Spell Correction Seq2Seq Model (PyTorch)
 
 PyTorch 기반 Encoder–Decoder 구조를 사용해 **오타가 포함된 문장을 자동으로 교정하는 Seq2Seq 모델**입니다.
 LSTM 기반 Encoder–Decoder와 Attention 메커니즘을 통해 문장 단위의 오타를 교정하는 NLP 프로젝트입니다.
@@ -24,6 +24,14 @@ PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능�
 - 모델의 forward 흐름을 **top-down 구조로 시각적으로 설명 가능**하도록 구현
 - 문장 단위 오타 교정 모델 완성
 
+---
+## 사용 데이터셋 
+#### C4 200M Grammar Error Correction dataset
+https://www.kaggle.com/datasets/dariocioni/c4200m/data
+
+#### 허깅 페이스 (torinriley/spell-correction)
+
+https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
 ---
 
 ## 📂 폴더 구조
@@ -69,6 +77,17 @@ project/
 ├── README.md
 
 └── requirements.txt
+
+
+### 2번 misspelled → correct 단어
+❌ 단독으론 부족
+✅ 보조 데이터로 좋음
+단어-level correction
+
+### 3번 input → target 문장
+✅ 매우 좋음
+✅ 필수 핵심
+문장-level Seq2Seq
 
 ---
 
