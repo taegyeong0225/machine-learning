@@ -32,6 +32,27 @@ https://www.kaggle.com/datasets/dariocioni/c4200m/data
 #### 허깅 페이스 (torinriley/spell-correction)
 
 https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
+
+
+
+🚀 그러면 가장 좋은 전략은?
+
+🔥 “문장 단위 병렬 데이터(3번)”을 메인으로 하고
+
+🔥 단어 단위 오타 데이터(2번)는 사전학습 + augmentation에 추가
+
+이 조합이 가장 높은 성능 + 완성도 + 교수님 만족도를 가져옴.
+
+⸻
+
+👉 원한다면 지금 바로:
+	•	2번 단어 오타 데이터 → 문장 레벨 학습에 통합 방법
+	•	3번 데이터셋 전처리 + train/val/test split 코드
+	•	오타 합성기(노이즈 생성기) 자동화
+	•	Seq2Seq LSTM + Attention 완전 코드
+	•	프로젝트 전체 구성을 자동 생성
+
+
 ---
 
 ## 📂 폴더 구조
