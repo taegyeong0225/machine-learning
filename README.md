@@ -196,6 +196,9 @@ python demo.py
 | `Ths is smple.` | `This is simple.` | `This is simple.` |
 | `I lov pytoch.` | `I love pytorch.` | `I love pytorch.` |
 
+
+<img width="454" height="207" alt="스크린샷 2025-11-20 오전 10 50 42" src="https://github.com/user-attachments/assets/8c2c5ce9-7379-46f9-8c3e-133e497bcfc0" />
+
 ---
 
 ## 📅 개발 일정 (4주)
