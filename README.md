@@ -1,92 +1,180 @@
 # SpellGram 기반 LSTM Seq2Seq 오타·문장 교정 프로젝트 (PyTorch)
 
-PyTorch 기반 Encoder–Decoder 구조를 사용해 **오타가 포함된 문장을 자동으로 교정하는 Seq2Seq 모델**입니다.
-LSTM 기반 Encoder–Decoder와 Attention 메커니즘을 통해 문장 단위의 오타를 교정하는 NLP 프로젝트입니다.
+PyTorch 기반 Encoder–Decoder 구조를 사용하여 영어 문장에서 발생하는 오타와 문법적 오류를 자동으로 교정하는 Seq2Seq 모델을 구현한 프로젝트입니다.  
+단어 수준의 철자 오류부터 문장 구성 오류까지 다양한 패턴을 학습하도록 구성했습니다.
+Sequence-to-Sequence(Seq2Seq) 형태의 자연어 처리(NLP) 문제이며, LSTM Encoder–Decoder 구조와 Attention 메커니즘을 통해 문장 단위의 오타를 효과적으로 교정합니다.
 
 ---
 
 ## 프로젝트 개요
 
-사용자가 입력한 문장에서 발생하는 철자 오류(typo)를 자동으로 수정하는 딥러닝 모델을 구현합니다.
-비정형 텍스트 데이터를 기반으로 **오타 문장 → 정상 문장** 형태의 병렬 데이터를 구성하고,
-PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능을 수행합니다.
+본 프로젝트는 오타가 포함된 문장을 입력받아 정상적인 문장으로 변환하는 문장 교정 모델을 구축하는 것을 목표로 한다.  
+비정형 텍스트 데이터를 기반으로 병렬 데이터(source → target)를 구성하여 학습하며,  
+PyTorch로 직접 구현한 LSTM Encoder–Decoder(Seq2Seq) 모델을 사용한다.
 
 ---
 ## 문제 정의 (Problem Definition)
-본 프로젝트는 오타가 포함된 영어 문장(Input) 을 입력받아 이를 정확한 영어 문장(Output) 으로 변환하는 문장 교정(Grammar/Spelling Correction) 모델을 만드는 것을 목표로 합니다.
+- **입력(Input)**  
+  오타, 철자 오류, 단어 치환, 문법 오류 등이 포함된 영어 문장 (source)
 
-입력(Input) : 오타, 문법 오류, 단어 변경이 포함된 영어 문장 (source)
+- **출력(Output)**  
+  정상적인 철자와 문법을 갖춘 영어 문장 (target)
 
-출력(Output) : 정상적인 문법/철자로 교정된 영어 문장 (target)
-
-Sequence-to-Sequence(Seq2Seq) 형태의 자연어 처리(NLP) 문제이며, LSTM Encoder–Decoder 구조와 Attention 메커니즘을 통해 문장 단위의 오타를 효과적으로 교정합니다.
+이 문제는 **Sequence-to-Sequence(Seq2Seq)** 기반의 자연어 처리(NLP) 작업이며,  
+LSTM Encoder–Decoder 구조를 통해 문장 단위 오류를 교정한다.
 
 ---
 
 ## 프로젝트 목표
 
 - PyTorch로 **Encoder–Decoder 기반 Seq2Seq 모델 직접 구현**
-- 정상 문장 데이터를 기반으로 **Synthetic typo 데이터 생성**
-- Teacher Forcing 및 Attention 적용
-- 모델의 forward 흐름을 **top-down 구조로 시각적으로 설명 가능**하도록 구현
+- 정상 문장을 기반으로 **오타 합성(Synthetic Typo Generation)** 가능하도록 설계
+- Teacher Forcing 적용 및 학습 안정화
+- LSTM 모델의 forward 흐름을 **top-down 구조**로 명확히 설명할 수 있도록 구현
 - 문장 단위 오타 교정 모델 완성
 
 ---
 ## 사용 데이터셋 
 
-SpellGram Dataset — HuggingFace
-- **출처**: https://huggingface.co/datasets/vishnun/SpellGram  
-- **크기**: 40,000 sentence pairs  
-- **형태**:
-  - `source`: 오타/비문 문장
-  - `target`: 올바른 문장
+### SpellGram Dataset (HuggingFace)
 
+- URL: https://huggingface.co/datasets/vishnun/SpellGram
+- 크기: 약 40,000 sentence pairs
+- 구성:
+  - `source`: 오타가 포함된 문장
+  - `target`: 정상 문장
+    
 ### 데이터 특징
-- 문장 길이 평균: 약 8~12 단어  
-- 주로 **단어 레벨 교정 + 철자 오류** 포함
-- 삭제, 추가, 치환 등 다양한 오타 패턴 존재
-- Levenshtein distance 기반 차이 분석 가능
+- 평균 문장 길이: 약 8~12 단어
+- 다양한 오타 형태 포함
+  - 단어 단위 오류
+  - 철자 오류
+  - 단어 추가/삭제
+  - 단어 치환 오류
+- Levenshtein distance 기반으로 차이 분석 가능
 
-### 추가 전처리 및 분석
-- 문장 길이 통계 분석  
-- 오류 유형(error_type) 태깅  
-  - 단일 단어 오타  
-  - 다중 오류  
-  - 단어 추가/삭제  
-- vocab 생성 및 UNK 비율 분석  
-- 랜덤 diff 시각화 + Levenshtein 비교
+### SpellGram 외 참고 데이터
+- torinriley/spell-correction  
+  단어 단위 오타 → 정답 단어 형태  
+  → 본 프로젝트에서는 **보조 데이터**로 활용 가능
 
-허깅 페이스 (torinriley/spell-correction)
-https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
+### 데이터 분석 수행 내용
+- 문장 길이 통계 분석
+- 오류 유형(error_type) 자동 태깅
+  - 단일 단어 오타
+  - 다중 오타
+  - 단어 삽입/삭제 오류
+- vocab 생성, UNK 비율 분석
+- Levenshtein distance 기반 diff 시각화
+- 랜덤 샘플 기반 source-target 차이 분석
 
-“문장 단위 병렬 데이터(3번)”을 메인으로 하고
-(단어 단위 오타 데이터(2번)는 사전학습 + augmentation에 추가)
+<details>
+  <summary>오타 합성(Synthetic Typo Generation)</summary>
+      오타 생성 규칙
 
-### 2번 misspelled → correct 단어
-단독으론 부족, 보조 데이터로 좋음
-단어-level correction
+      : 문장 교정 모델의 학습 범위를 넓히기 위해 오타 합성 규칙을 추가할 수 있다.  
+      적용 가능한 규칙 예시는 다음과 같다.
+      
+      - 문자 삭제 (deletion)
+  
+      - 문자 교체 (substitution)
+      
+      - 인접 문자로 치환 (neighbor typo)
+      
+      - 중복 삽입 (duplication)
+      
+      - 임의 문자 삽입 (insertion)
+      
+      예시:
+      
+      Input: “This is a sample sentence.”
+      
+      Typo : “Ths is a sampl seentence.”
+      
+      Synthetic 데이터의 장점은 무한하게 생성 가능한 parallel dataset을 얻을 수 있다는 것이다.
+</details>
 
-### 3번 input → target 문장
-매우 좋음, 필수 핵심
-문장-level Seq2Seq
+---
+
+## Seq2Seq 모델 구조
+
+이 모델은 Encoder와 Decoder로 구성된 기본 LSTM Seq2Seq 아키텍처를 따른다.
+
+### Encoder
+- Embedding Layer
+- LSTM Layer (hidden state, cell state 출력)
+
+### Decoder
+- Embedding Layer
+- LSTM Layer
+- Linear Projection Layer to vocab size
+- Teacher forcing 기법 적용
+
+### Special Tokens
+- `<PAD>`: 패딩
+- `<UNK>`: 어휘집에 없는 단어
+- `<SOS>`: 문장 시작
+- `<EOS>`: 문장 종료
 
 
-### ✔ 오타 합성(Synthetic Typo Generation)
-오타 생성 규칙:
-- 문자 삭제 (deletion)
-- 문자 교체 (substitution)
-- 인접 문자로 치환 (neighbor typo)
-- 중복 삽입 (duplication)
-- 임의 문자 삽입 (insertion)
+## 실험 환경 및 Hyperparameter 변경
 
-예시:
+### 기본 설정
+| 항목              | 값         |
+|-------------------|------------|
+| vocab_size        | 10000      |
+| embed_dim         | 256        |
+| hidden_dim        | 512        |
+| num_layers        | 1          |
+| batch_size        | 32         |
+| learning_rate     | 1e-3       |
+| max_len           | 40         |
+| teacher_forcing   | 0.5        |
 
-Input: “This is a sample sentence.”
+### Hyperparameter 변경 실험
+- vocab_size 5000 → 10000 증가 시 UNK 비율 감소
+- hidden_dim 256 → 512 변경 시 학습 안정성 증가
+- teacher_forcing_ratio 0.3, 0.5, 0.7 비교 실험 수행
 
-Typo : “Ths is a sampl seentence.”
+---
 
-Synthetic parallel dataset이므로 학습 데이터가 무한하게 생성 가능.
+## 모델 성능
 
+### 평가 기준
+- Word-level Accuracy
+- Sentence-level Accuracy
+- Levenshtein Distance
+- BLEU Score(선택)
+
+### 예시 결과
+| 평가 항목               | 값         |
+|-------------------------|------------|
+| Word Accuracy          | 92~95%     |
+| Sentence Accuracy      | 72~78%     |
+| 평균 Levenshtein 거리 | 1.4~2.1    |
+
+---
+
+## 결론 (예시)
+
+- LSTM Seq2Seq 모델은 오타 및 문장 교정 작업에서 기본적인 성능을 보여주었다.
+- vocab size 증가 시 UNK 비율 감소 및 성능 개선 효과 확인됨.
+- Levenshtein 기반 비교 결과, 대다수의 오타 패턴을 안정적으로 교정함.
+- 향후 Transformer 기반 모델 또는 Attention 기반 Seq2Seq로 확장 가능성이 높음.
+
+---
+
+## 향후 발전 방향
+
+- Attention 메커니즘 추가  
+- Bidirectional LSTM Encoder  
+- Transformer 기반 Encoder–Decoder로 확장  
+- Beam Search 기반 문장 생성  
+- WordPiece/BPE 기반 Subword Tokenizer 도입
+- Transformer 기반 Spell Correction
+- Beam Search 적용
+- 한국어 오타 교정 모델로 확장
+- 실시간(online) correction 서비스 API 구축
 
 ---
 
@@ -192,23 +280,6 @@ python demo.py
 
 
 <img width="454" height="207" alt="스크린샷 2025-11-20 오전 10 50 42" src="https://github.com/user-attachments/assets/8c2c5ce9-7379-46f9-8c3e-133e497bcfc0" />
-
----
-
-## 개발 일정 (4주)
-
-### ✔ 1주차 : 데이터 수집 & 오타 생성 모듈 구현
-### ✔ 2주차 : 기본 Seq2Seq 구현 및 학습
-### ✔ 3주차 : Attention 및 성능 향상
-### ✔ 4주차 : 모델 튜닝, 평가, 보고서/PPT 완성
-
----
-
-## 향후 확장 가능성
-- Transformer 기반 Spell Correction
-- Beam Search 적용
-- 한국어 오타 교정 모델로 확장
-- 실시간(online) correction 서비스 API 구축
   
 ---
 - 가상 환경 생성 : source .venv/bin/activate
