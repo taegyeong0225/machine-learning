@@ -8,7 +8,7 @@ LSTM 기반 Encoder–Decoder와 Attention 메커니즘을 통해 문장 단위�
 
 ---
 
-## 📌 프로젝트 개요
+## 프로젝트 개요
 
 사용자가 입력한 문장에서 발생하는 철자 오류(typo)를 자동으로 수정하는 딥러닝 모델을 구현합니다.
 비정형 텍스트 데이터를 기반으로 **오타 문장 → 정상 문장** 형태의 병렬 데이터를 구성하고,
@@ -16,7 +16,7 @@ PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능�
 
 ---
 
-## 🎯 프로젝트 목표
+## 프로젝트 목표
 
 - PyTorch로 **Encoder–Decoder 기반 Seq2Seq 모델 직접 구현**
 - 정상 문장 데이터를 기반으로 **Synthetic typo 데이터 생성**
@@ -33,90 +33,19 @@ https://www.kaggle.com/datasets/dariocioni/c4200m/data
 
 https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
 
-
-
-🚀 그러면 가장 좋은 전략은?
-
-🔥 “문장 단위 병렬 데이터(3번)”을 메인으로 하고
-
-🔥 단어 단위 오타 데이터(2번)는 사전학습 + augmentation에 추가
-
-이 조합이 가장 높은 성능 + 완성도 + 교수님 만족도를 가져옴.
-
-⸻
-
-👉 원한다면 지금 바로:
-	•	2번 단어 오타 데이터 → 문장 레벨 학습에 통합 방법
-	•	3번 데이터셋 전처리 + train/val/test split 코드
-	•	오타 합성기(노이즈 생성기) 자동화
-	•	Seq2Seq LSTM + Attention 완전 코드
-	•	프로젝트 전체 구성을 자동 생성
-
-
----
-
-## 📂 폴더 구조
-
-project/
-
-├── data/
-
-│    ├── raw/               # 원본 텍스트 (AG News, TED 등)
-
-│    ├── processed/         # 토크나이즈/벡터화된 데이터
-
-│    └── typo/              # 오타 합성 후 병렬 데이터
-
-│
-
-├── src/
-
-│    ├── dataset.py         # Dataset, Dataloader 정의
-
-│    ├── model.py           # Encoder, Decoder, Attention 모듈
-
-│    ├── train.py           # 학습 루프
-
-│    ├── evaluate.py        # 평가 및 BLEU/CER 계산
-
-│    ├── utils.py           # 토크나이저, 오타 생성 모듈
-
-│    └── config.py          # 하이퍼파라미터 정의
-
-│
-
-├── notebooks/
-
-│    └── EDA_and_Preprocessing.ipynb
-
-│
-
-├── saved_models/
-
-│
-
-├── README.md
-
-└── requirements.txt
-
+“문장 단위 병렬 데이터(3번)”을 메인으로 하고
+(단어 단위 오타 데이터(2번)는 사전학습 + augmentation에 추가)
 
 ### 2번 misspelled → correct 단어
-❌ 단독으론 부족
-✅ 보조 데이터로 좋음
+단독으론 부족, 보조 데이터로 좋음
 단어-level correction
 
 ### 3번 input → target 문장
-✅ 매우 좋음
-✅ 필수 핵심
+매우 좋음, 필수 핵심
 문장-level Seq2Seq
 
----
 
-## 🧪 데이터셋
-
-### ✔ 원본 문장 데이터
-- **AG News**, **TED Talks**, **Wikipedia Sentences** 등
-- 짧고 자연스러운 영어 문장 기반
+## 데이터셋
 
 ### ✔ 오타 합성(Synthetic Typo Generation)
 오타 생성 규칙:
@@ -134,9 +63,10 @@ Typo : “Ths is a sampl seentence.”
 
 Synthetic parallel dataset이므로 학습 데이터가 무한하게 생성 가능.
 
+
 ---
 
-## 🧠 모델 구조
+## 모델 구조
 
 ### ✔ 기본 Seq2Seq 아키텍처
 
@@ -196,7 +126,7 @@ Output Tokens
 
 ---
 
-## ▶ 실행 방법
+## 실행 방법
 
 ### 1) 패키지 설치
 
@@ -220,7 +150,7 @@ python demo.py
 
 ---
 
-## 📈 모델 평가 지표
+## 모델 평가 지표
 - Character-level Accuracy
 - Word-level Accuracy
 - BLEU Score
@@ -229,7 +159,7 @@ python demo.py
 
 ---
 
-## 📊 결과 예시
+## 결과 예시
 
 | 입력(오타 문장) | 출력(모델 교정) | 정답 |
 |----------------|------------------|-------|
@@ -241,7 +171,7 @@ python demo.py
 
 ---
 
-## 📅 개발 일정 (4주)
+## 개발 일정 (4주)
 
 ### ✔ 1주차 : 데이터 수집 & 오타 생성 모듈 구현
 ### ✔ 2주차 : 기본 Seq2Seq 구현 및 학습
@@ -250,7 +180,7 @@ python demo.py
 
 ---
 
-## 📌 향후 확장 가능성
+## 향후 확장 가능성
 - Transformer 기반 Spell Correction
 - Beam Search 적용
 - 한국어 오타 교정 모델로 확장
@@ -264,7 +194,7 @@ python demo.py
 ---
 - 가상 환경 생성 : source .venv/bin/activate
 - pip install -r requirements.txt
-
+- requirements.txt 자동 생성
 
 - README에 들어갈 아키텍처 다이어그램(Mermaid) 제작
 
