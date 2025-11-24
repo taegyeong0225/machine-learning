@@ -262,7 +262,9 @@ python demo.py
 궁금한 부분은 언제든지 질문해주세요!
 
 ---
-- requirements.txt 자동 생성
+- 가상 환경 생성 : source .venv/bin/activate
+- pip install -r requirements.txt
+
 
 - README에 들어갈 아키텍처 다이어그램(Mermaid) 제작
 
