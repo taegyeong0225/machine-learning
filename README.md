@@ -278,8 +278,6 @@ python demo.py
 | `Ths is smple.` | `This is simple.` | `This is simple.` |
 | `I lov pytoch.` | `I love pytorch.` | `I love pytorch.` |
 
-
-<img width="454" height="207" alt="스크린샷 2025-11-20 오전 10 50 42" src="https://github.com/user-attachments/assets/8c2c5ce9-7379-46f9-8c3e-133e497bcfc0" />
   
 ---
 - 가상 환경 생성 : source .venv/bin/activate
@@ -289,7 +287,25 @@ python demo.py
 - README에 들어갈 아키텍처 다이어그램(Mermaid) 제작
 
 - 전체 프로젝트 파일 생성
+  
+<details>
+  <summary>LSTM + Seq2Seq + Attention</summary>
+  Seq2Seq = 전체 프레임워크(문장→문장 변환 문제) "틀"
+  LSTM = Seq2Seq 모델을 구성하는 Encoder/Decoder의 내부 구조(회로) "엔진"
+  Attention = LSTM Seq2Seq의 성능 한계를 보완하는 추가 모듈 "보조시스템"
 
+  문장 -> 벡터 (어떻게 바꿀 것인지?)
+  아님 모델 변경
+  전처리 변경
+  등등... 너무 어려우면 하이퍼 파라미터 변경
+  
+  생성 or 분류? 
+</details>
+
+<details>
+  <summary>Seq2Seq</summary>
+
+</details>
 
 <details>
   <summary>주제 후보였던 것</summary>
