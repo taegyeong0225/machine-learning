@@ -1,7 +1,4 @@
-# machine-learning 프로젝트
-pytorch의 nn.Module을 사용해 직접 구현
-
-# Spell Correction Seq2Seq Model (PyTorch)
+# SpellGram 기반 LSTM Seq2Seq 오타·문장 교정 프로젝트 (PyTorch)
 
 PyTorch 기반 Encoder–Decoder 구조를 사용해 **오타가 포함된 문장을 자동으로 교정하는 Seq2Seq 모델**입니다.
 LSTM 기반 Encoder–Decoder와 Attention 메커니즘을 통해 문장 단위의 오타를 교정하는 NLP 프로젝트입니다.
@@ -14,6 +11,15 @@ LSTM 기반 Encoder–Decoder와 Attention 메커니즘을 통해 문장 단위�
 비정형 텍스트 데이터를 기반으로 **오타 문장 → 정상 문장** 형태의 병렬 데이터를 구성하고,
 PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능을 수행합니다.
 
+---
+## 문제 정의 (Problem Definition)
+본 프로젝트는 오타가 포함된 영어 문장(Input) 을 입력받아 이를 정확한 영어 문장(Output) 으로 변환하는 문장 교정(Grammar/Spelling Correction) 모델을 만드는 것을 목표로 합니다.
+
+입력(Input) : 오타, 문법 오류, 단어 변경이 포함된 영어 문장 (source)
+
+출력(Output) : 정상적인 문법/철자로 교정된 영어 문장 (target)
+
+이 문제는 Sequence-to-Sequence(Seq2Seq) 형태의 자연어 처리(NLP) 문제이며, LSTM Encoder–Decoder 구조와 Attention 메커니즘을 통해 문장 단위의 오타를 효과적으로 교정합니다.
 ---
 
 ## 프로젝트 목표
