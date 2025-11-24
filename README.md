@@ -26,11 +26,11 @@ PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능�
 
 ---
 ## 사용 데이터셋 
-#### C4 200M Grammar Error Correction dataset
-https://www.kaggle.com/datasets/dariocioni/c4200m/data
 
-#### 허깅 페이스 (torinriley/spell-correction)
+허깅 페이스 (/vishnun/SpellGram)
+https://huggingface.co/datasets/vishnun/SpellGram
 
+허깅 페이스 (torinriley/spell-correction)
 https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
 
 “문장 단위 병렬 데이터(3번)”을 메인으로 하고
@@ -224,6 +224,9 @@ python demo.py
 - 구현 방법 : Hugging Face의 BERT 모델을 '기반(Base)'으로 가져온 뒤, 그 위에 '분류용 헤드(Head)' 레이어를 nn.Module을 사용해 직접 구현
 - 분류용 손실 함수 : nn.CrossEntropyLoss()
 - 평가 지표 : 정확도(Accuracy)
+- ----
+#### 데이터셋 후보 : C4 200M Grammar Error Correction dataset
+https://www.kaggle.com/datasets/dariocioni/c4200m/data
 
 </details>
 
