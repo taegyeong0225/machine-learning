@@ -114,7 +114,7 @@ Output Tokens
 
 ---
 
-## 🔧 주요 PyTorch 구성 요소
+## 주요 PyTorch 구성 요소
 - `nn.Embedding`
 - `nn.LSTM`
 - `nn.Linear`
@@ -185,12 +185,7 @@ python demo.py
 - Beam Search 적용
 - 한국어 오타 교정 모델로 확장
 - 실시간(online) correction 서비스 API 구축
-
----
-
-## 📧 문의
-궁금한 부분은 언제든지 질문해주세요!
-
+  
 ---
 - 가상 환경 생성 : source .venv/bin/activate
 - pip install -r requirements.txt
