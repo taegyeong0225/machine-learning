@@ -34,8 +34,27 @@ Sequence-to-Sequence(Seq2Seq) 형태의 자연어 처리(NLP) 문제이며, LSTM
 ---
 ## 사용 데이터셋 
 
-허깅 페이스 (/vishnun/SpellGram)
-https://huggingface.co/datasets/vishnun/SpellGram
+SpellGram Dataset — HuggingFace
+- **출처**: https://huggingface.co/datasets/vishnun/SpellGram  
+- **크기**: 40,000 sentence pairs  
+- **형태**:
+  - `source`: 오타/비문 문장
+  - `target`: 올바른 문장
+
+### 데이터 특징
+- 문장 길이 평균: 약 8~12 단어  
+- 주로 **단어 레벨 교정 + 철자 오류** 포함
+- 삭제, 추가, 치환 등 다양한 오타 패턴 존재
+- Levenshtein distance 기반 차이 분석 가능
+
+### 추가 전처리 및 분석
+- 문장 길이 통계 분석  
+- 오류 유형(error_type) 태깅  
+  - 단일 단어 오타  
+  - 다중 오류  
+  - 단어 추가/삭제  
+- vocab 생성 및 UNK 비율 분석  
+- 랜덤 diff 시각화 + Levenshtein 비교
 
 허깅 페이스 (torinriley/spell-correction)
 https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
@@ -51,8 +70,6 @@ https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=t
 매우 좋음, 필수 핵심
 문장-level Seq2Seq
 
-
-## 데이터셋
 
 ### ✔ 오타 합성(Synthetic Typo Generation)
 오타 생성 규칙:
