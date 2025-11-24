@@ -1,8 +1,8 @@
 # SpellGram 기반 LSTM Seq2Seq 오타·문장 교정 프로젝트 (PyTorch)
 
-PyTorch 기반 Encoder–Decoder 구조를 사용하여 영어 문장에서 발생하는 오타와 문법적 오류를 자동으로 교정하는 Seq2Seq 모델을 구현한 프로젝트입니다.  
-단어 수준의 철자 오류부터 문장 구성 오류까지 다양한 패턴을 학습하도록 구성했습니다.
-Sequence-to-Sequence(Seq2Seq) 형태의 자연어 처리(NLP) 문제이며, LSTM Encoder–Decoder 구조와 Attention 메커니즘을 통해 문장 단위의 오타를 효과적으로 교정합니다.
+PyTorch 기반 Encoder–Decoder 구조를 사용하여 영어 문장에서 발생하는 오타와 문법적 오류를 자동으로 교정하는 Seq2Seq 모델을 구현한 프로젝트이다.
+
+단어 수준의 철자 오류부터 문장 구성 오류까지 다양한 패턴을 학습하도록 구성하였다.
 
 ---
 
