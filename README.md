@@ -19,7 +19,8 @@ PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능�
 
 출력(Output) : 정상적인 문법/철자로 교정된 영어 문장 (target)
 
-이 문제는 Sequence-to-Sequence(Seq2Seq) 형태의 자연어 처리(NLP) 문제이며, LSTM Encoder–Decoder 구조와 Attention 메커니즘을 통해 문장 단위의 오타를 효과적으로 교정합니다.
+Sequence-to-Sequence(Seq2Seq) 형태의 자연어 처리(NLP) 문제이며, LSTM Encoder–Decoder 구조와 Attention 메커니즘을 통해 문장 단위의 오타를 효과적으로 교정합니다.
+
 ---
 
 ## 프로젝트 목표
