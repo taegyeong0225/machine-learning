@@ -140,21 +140,39 @@ def main():
     device = Config.DEVICE
     print(f"\n사용 디바이스: {device}")
     
-    # 데이터 로드 (예시 - 실제 데이터셋 경로로 변경 필요)
+    # 데이터 로드
     print("\n데이터 로드 중...")
-    # TODO: 실제 데이터 로드 코드 추가
-    # from datasets import load_dataset
-    # ds = load_dataset("vishnun/SpellGram")
-    # train_data = ds["train"]
-    # val_data = ds["validation"] if "validation" in ds else None
+    from datasets import load_from_disk
     
-    # 임시 샘플 데이터 (실제로는 위의 데이터셋 사용)
-    print("⚠️  임시 샘플 데이터 사용 중... 실제 데이터셋으로 교체 필요")
-    train_data = [
-        {'source': 'this is a smple sentence', 'target': 'this is a sample sentence'},
-        {'source': 'helo world', 'target': 'hello world'},
-        {'source': 'machne lernig', 'target': 'machine learning'},
-    ] * 100  # 임시로 데이터 증강
+    if Config.TRAIN_DATA_PATH.exists():
+        print(f"로컬 저장소에서 데이터 로드: {Config.TRAIN_DATA_PATH}")
+        raw_train_data = load_from_disk(str(Config.TRAIN_DATA_PATH))
+        
+        # HuggingFace dataset을 list of dicts로 변환
+        train_data = []
+        for item in raw_train_data:
+            if item['source'] and item['target']:
+                train_data.append({
+                    'source': item['source'], 
+                    'target': item['target']
+                })
+        print(f"학습 데이터: {len(train_data)}개")
+    else:
+        print(f"저장된 데이터가 없습니다: {Config.TRAIN_DATA_PATH}")
+        print("먼저 src/data_processing/prepare_data.py를 실행하세요.")
+        return
+
+    
+    if Config.VAL_DATA_PATH.exists():
+        print(f"검증 데이터 로드: {Config.VAL_DATA_PATH}")
+        raw_val_data = load_from_disk(str(Config.VAL_DATA_PATH))
+        val_data = [{'source': item['source'], 'target': item['target']} 
+                   for item in raw_val_data if item['source'] and item['target']]
+        print(f"검증 데이터: {len(val_data)}개")
+    else:
+        print("⚠️ 검증 데이터가 없습니다. 학습 데이터의 일부를 사용하거나 prepare_data.py를 다시 실행하세요.")
+        val_data = []
+
     
     # 토크나이저 로드 또는 생성
     tokenizer_path = Config.TOKENIZER_PATH
@@ -182,7 +200,20 @@ def main():
         num_workers=0
     )
     
+    val_loader = None
+    if val_data:
+        val_dataset = GECDataset(val_data, tokenizer, max_len=Config.MAX_LEN)
+        val_loader = DataLoader(
+            val_dataset,
+            batch_size=Config.BATCH_SIZE,
+            shuffle=False, # 검증은 섞을 필요 없음
+            collate_fn=collate_fn,
+            num_workers=0
+        )
+    
     print(f"학습 데이터: {len(train_dataset)}개 샘플, {len(train_loader)}개 배치")
+    if val_loader:
+        print(f"검증 데이터: {len(val_dataset)}개 샘플, {len(val_loader)}개 배치")
     
     # 모델 생성
     print("\n모델 생성 중...")
@@ -225,15 +256,22 @@ def main():
         print(f"\nEpoch {epoch} 결과:")
         print(f"  Train Loss: {train_loss:.4f}")
         
+        # 검증
+        current_val_loss = train_loss # Val set 없으면 Train loss 사용
+        if val_loader:
+            val_loss = validate(model, val_loader, criterion, device)
+            print(f"  Val Loss  : {val_loss:.4f}")
+            current_val_loss = val_loss
+        
         # 체크포인트 저장
         checkpoint_path = Config.CHECKPOINT_DIR / f"checkpoint_epoch_{epoch}.pt"
-        save_checkpoint(model, optimizer, epoch, train_loss, checkpoint_path)
+        save_checkpoint(model, optimizer, epoch, current_val_loss, checkpoint_path)
         
         # Best model 저장
-        if train_loss < best_loss:
-            best_loss = train_loss
+        if current_val_loss < best_loss:
+            best_loss = current_val_loss
             best_path = Config.CHECKPOINT_DIR / "best_model.pt"
-            save_checkpoint(model, optimizer, epoch, train_loss, best_path)
+            save_checkpoint(model, optimizer, epoch, current_val_loss, best_path)
             print(f"  ✅ Best model 저장 (Loss: {best_loss:.4f})")
     
     print("\n" + "=" * 60)

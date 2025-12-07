@@ -1,0 +1,42 @@
+{
+  "builder_name": "csv",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "spell_gram",
+  "dataset_size": 4730662,
+  "description": "",
+  "download_checksums": {
+    "hf://datasets/vishnun/SpellGram@4f6665728570c5c3c625684dbbae0d0e0bca12f5/train.csv": {
+      "num_bytes": 4489429,
+      "checksum": null
+    }
+  },
+  "download_size": 4489429,
+  "features": {
+    "source": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "target": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 9220091,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 4730662,
+      "num_examples": 40000,
+      "dataset_name": "spell_gram"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}

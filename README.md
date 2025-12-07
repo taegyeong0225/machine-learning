@@ -60,11 +60,10 @@ https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=t
 - 중복 삽입 (duplication)
 - 임의 문자 삽입 (insertion)
 
-예시:
-
+```python
 Input: “This is a sample sentence.”
-
 Typo : “Ths is a sampl seentence.”
+```
 
 Synthetic parallel dataset이므로 학습 데이터가 무한하게 생성 가능.
 
