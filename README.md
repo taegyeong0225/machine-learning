@@ -1,18 +1,19 @@
 # machine-learning 프로젝트
 
-# LSTM 기반 오타 교정 모델 (Spelling Correction Model)
+pytorch의 nn.Module을 사용해 직접 구현
 
-PyTorch의 nn.Module을 기반으로 Encoder–Decoder 구조를 직접 구현하여,
-철자가 틀린 문장을 자동으로 교정하는 Seq2Seq 기반 오타 교정 모델입니다.
+# Spell Correction Seq2Seq Model (PyTorch)
 
-본 프로젝트는 LSTM 기반 Seq2Seq 모델을 기본으로 하며,
-추가적으로 Attention 메커니즘 적용 여부에 따른 성능 비교를 수행합니다.
+PyTorch 기반 Encoder–Decoder 구조를 사용해 **오타가 포함된 문장을 자동으로 교정하는 Seq2Seq 모델**입니다.
+LSTM 기반 Encoder–Decoder와 Attention 메커니즘을 통해 문장 단위의 오타를 교정하는 NLP 프로젝트입니다.
 
 ---
 
 ## 프로젝트 개요
 
-사용자가 입력한 문장에서 발생하는 철자 오류(typo)를 자동으로 수정하는 딥러닝 모델을 구현합니다. 비정형 텍스트 데이터를 기반으로 **오타 문장 → 정상 문장** 형태의 병렬 데이터를 구성하고, 문장 내 오타(철자 오류)를 자동으로 교정하는 LSTM 기반 Seq2Seq 모델을 구현한다. 필요 시 Transformer 구조와 성능을 비교하는 실험을 확장한다.
+사용자가 입력한 문장에서 발생하는 철자 오류(typo)를 자동으로 수정하는 딥러닝 모델을 구현합니다.
+비정형 텍스트 데이터를 기반으로 **오타 문장 → 정상 문장** 형태의 병렬 데이터를 구성하고,
+PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능을 수행합니다.
 
 ---
 
@@ -22,8 +23,8 @@ PyTorch의 nn.Module을 기반으로 Encoder–Decoder 구조를 직접 구현�
 - 정상 문장 데이터를 기반으로 **Synthetic typo 데이터 생성**
 - Teacher Forcing 및 Attention 적용
 - 모델의 forward 흐름을 **top-down 구조로 시각적으로 설명 가능**하도록 구현
-- 문장 단위 오타 교정 모델 완성 (오타가 포함된 문장을 입력하면 정상 철자로 복원)
-- LSTM vs Transformer 구조 및 성능 비교
+- 문장 단위 오타 교정 모델 완성
+
 ---
 
 ## 사용 데이터셋
@@ -32,22 +33,22 @@ PyTorch의 nn.Module을 기반으로 Encoder–Decoder 구조를 직접 구현�
 
 https://www.kaggle.com/datasets/dariocioni/c4200m/data
 
-- input → target 문장
-
-- 필수 핵심, 문장-level Seq2Seq
-
-
 #### 허깅 페이스 (torinriley/spell-correction)
 
 https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
 
-- misspelled → correct 단어
+“문장 단위 병렬 데이터(3번)”을 메인으로 하고
+(단어 단위 오타 데이터(2번)는 사전학습 + augmentation에 추가)
 
-- 단독으론 부족하며 보조 데이터로 좋음, 단어-level correction
+### 2번 misspelled → correct 단어
 
-“문장 단위 병렬 데이터(C4 200M Grammar Error Correction dataset)”을 메인으로 하고
-(단어 단위 오타 데이터(orinriley/spell-correction)는 필요시 사전학습 + augmentation에 추가)
+단독으론 부족, 보조 데이터로 좋음
+단어-level correction
 
+### 3번 input → target 문장
+
+매우 좋음, 필수 핵심
+문장-level Seq2Seq
 
 ## 데이터셋
 
@@ -61,7 +62,6 @@ https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=t
 - 중복 삽입 (duplication)
 - 임의 문자 삽입 (insertion)
 
-```python
 예시:
 
 Input: “This is a sample sentence.”
@@ -69,7 +69,6 @@ Input: “This is a sample sentence.”
 Typo : “Ths is a sampl seentence.”
 
 Synthetic parallel dataset이므로 학습 데이터가 무한하게 생성 가능.
-```
 
 ---
 
@@ -246,5 +245,11 @@ python demo.py
 - 구현 방법 : Hugging Face의 BERT 모델을 '기반(Base)'으로 가져온 뒤, 그 위에 '분류용 헤드(Head)' 레이어를 nn.Module을 사용해 직접 구현
 - 분류용 손실 함수 : nn.CrossEntropyLoss()
 - 평가 지표 : 정확도(Accuracy)
+
+---
+
+#### 데이터셋 후보 : C4 200M Grammar Error Correction dataset
+
+https://www.kaggle.com/datasets/dariocioni/c4200m/data
 
 </details>
