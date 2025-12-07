@@ -1,18 +1,18 @@
 # machine-learning 프로젝트
-pytorch의 nn.Module을 사용해 직접 구현
 
-# Spell Correction Seq2Seq Model (PyTorch)
+# LSTM 기반 오타 교정 모델 (Spelling Correction Model)
 
-PyTorch 기반 Encoder–Decoder 구조를 사용해 **오타가 포함된 문장을 자동으로 교정하는 Seq2Seq 모델**입니다.
-LSTM 기반 Encoder–Decoder와 Attention 메커니즘을 통해 문장 단위의 오타를 교정하는 NLP 프로젝트입니다.
+PyTorch의 nn.Module을 기반으로 Encoder–Decoder 구조를 직접 구현하여,
+철자가 틀린 문장을 자동으로 교정하는 Seq2Seq 기반 오타 교정 모델입니다.
+
+본 프로젝트는 LSTM 기반 Seq2Seq 모델을 기본으로 하며,
+추가적으로 Attention 메커니즘 적용 여부에 따른 성능 비교를 수행합니다.
 
 ---
 
 ## 프로젝트 개요
 
-사용자가 입력한 문장에서 발생하는 철자 오류(typo)를 자동으로 수정하는 딥러닝 모델을 구현합니다.
-비정형 텍스트 데이터를 기반으로 **오타 문장 → 정상 문장** 형태의 병렬 데이터를 구성하고,
-PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능을 수행합니다.
+사용자가 입력한 문장에서 발생하는 철자 오류(typo)를 자동으로 수정하는 딥러닝 모델을 구현합니다. 비정형 텍스트 데이터를 기반으로 **오타 문장 → 정상 문장** 형태의 병렬 데이터를 구성하고, 문장 내 오타(철자 오류)를 자동으로 교정하는 LSTM 기반 Seq2Seq 모델을 구현한다. 필요 시 Transformer 구조와 성능을 비교하는 실험을 확장한다.
 
 ---
 
@@ -22,39 +22,46 @@ PyTorch로 직접 구현한 Seq2Seq 모델을 학습하여 오타 교정 기능�
 - 정상 문장 데이터를 기반으로 **Synthetic typo 데이터 생성**
 - Teacher Forcing 및 Attention 적용
 - 모델의 forward 흐름을 **top-down 구조로 시각적으로 설명 가능**하도록 구현
-- 문장 단위 오타 교정 모델 완성
-
+- 문장 단위 오타 교정 모델 완성 (오타가 포함된 문장을 입력하면 정상 철자로 복원)
+- LSTM vs Transformer 구조 및 성능 비교
 ---
-## 사용 데이터셋 
+
+## 사용 데이터셋
+
 #### C4 200M Grammar Error Correction dataset
+
 https://www.kaggle.com/datasets/dariocioni/c4200m/data
+
+- input → target 문장
+
+- 필수 핵심, 문장-level Seq2Seq
+
 
 #### 허깅 페이스 (torinriley/spell-correction)
 
 https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
 
-“문장 단위 병렬 데이터(3번)”을 메인으로 하고
-(단어 단위 오타 데이터(2번)는 사전학습 + augmentation에 추가)
+- misspelled → correct 단어
 
-### 2번 misspelled → correct 단어
-단독으론 부족, 보조 데이터로 좋음
-단어-level correction
+- 단독으론 부족하며 보조 데이터로 좋음, 단어-level correction
 
-### 3번 input → target 문장
-매우 좋음, 필수 핵심
-문장-level Seq2Seq
+“문장 단위 병렬 데이터(C4 200M Grammar Error Correction dataset)”을 메인으로 하고
+(단어 단위 오타 데이터(orinriley/spell-correction)는 필요시 사전학습 + augmentation에 추가)
 
 
 ## 데이터셋
 
 ### ✔ 오타 합성(Synthetic Typo Generation)
+
 오타 생성 규칙:
+
 - 문자 삭제 (deletion)
 - 문자 교체 (substitution)
 - 인접 문자로 치환 (neighbor typo)
 - 중복 삽입 (duplication)
 - 임의 문자 삽입 (insertion)
 
+```python
 예시:
 
 Input: “This is a sample sentence.”
@@ -62,7 +69,7 @@ Input: “This is a sample sentence.”
 Typo : “Ths is a sampl seentence.”
 
 Synthetic parallel dataset이므로 학습 데이터가 무한하게 생성 가능.
-
+```
 
 ---
 
@@ -115,6 +122,7 @@ Output Tokens
 ---
 
 ## 🔧 주요 PyTorch 구성 요소
+
 - `nn.Embedding`
 - `nn.LSTM`
 - `nn.Linear`
@@ -151,6 +159,7 @@ python demo.py
 ---
 
 ## 모델 평가 지표
+
 - Character-level Accuracy
 - Word-level Accuracy
 - BLEU Score
@@ -161,11 +170,10 @@ python demo.py
 
 ## 결과 예시
 
-| 입력(오타 문장) | 출력(모델 교정) | 정답 |
-|----------------|------------------|-------|
+| 입력(오타 문장) | 출력(모델 교정)   | 정답              |
+| --------------- | ----------------- | ----------------- |
 | `Ths is smple.` | `This is simple.` | `This is simple.` |
 | `I lov pytoch.` | `I love pytorch.` | `I love pytorch.` |
-
 
 <img width="454" height="207" alt="스크린샷 2025-11-20 오전 10 50 42" src="https://github.com/user-attachments/assets/8c2c5ce9-7379-46f9-8c3e-133e497bcfc0" />
 
@@ -174,13 +182,17 @@ python demo.py
 ## 개발 일정 (4주)
 
 ### ✔ 1주차 : 데이터 수집 & 오타 생성 모듈 구현
+
 ### ✔ 2주차 : 기본 Seq2Seq 구현 및 학습
+
 ### ✔ 3주차 : Attention 및 성능 향상
+
 ### ✔ 4주차 : 모델 튜닝, 평가, 보고서/PPT 완성
 
 ---
 
 ## 향후 확장 가능성
+
 - Transformer 기반 Spell Correction
 - Beam Search 적용
 - 한국어 오타 교정 모델로 확장
@@ -189,9 +201,11 @@ python demo.py
 ---
 
 ## 📧 문의
+
 궁금한 부분은 언제든지 질문해주세요!
 
 ---
+
 - 가상 환경 생성 : source .venv/bin/activate
 - pip install -r requirements.txt
 - requirements.txt 자동 생성
@@ -199,7 +213,6 @@ python demo.py
 - README에 들어갈 아키텍처 다이어그램(Mermaid) 제작
 
 - 전체 프로젝트 파일 생성
-
 
 <details>
   <summary>주제 후보였던 것</summary>
@@ -215,15 +228,19 @@ python demo.py
 - CNN 기반 이미지 분류 모델 (ResNet, EfficientNet, ViT)
 
 ## 주제 2. 멜론 가사로 "아티스트 스타일 모방" 가사 생성기 만들기
+
 ### 아티스트들의 기존 노래 가사들을 학습하여, 아티스트 스타일을 모방한 가사를 생성하는 모델 (짧게 생성)
-- 입력: 가수명, 출력: 아티스트 스타일을 모방한 가사 생성 
+
+- 입력: 가수명, 출력: 아티스트 스타일을 모방한 가사 생성
 - 데이터 수집 : 멜론 노래 가사 및 정보 크롤링
 - 구현 방법 : RNN(LSTM 또는 GRU) 기반 시퀀스 생성 모델을 nn.Module로 직접 구현
 - 생성용 손실 함수 : nn.CrossEntropyLoss()
 - 언어모델 평가지표 : Perplexity (PPL)
 
 ## 주제 3. 멜론 가사로 아티스트 분류하는 모델
+
 ### 크롤링한 가사 한 구절을 모델에 입력하면, 이 가사를 '아이유'가 썼는지, 'BTS'가 썼는지, '김광석'이 썼는지 맞추는(분류하는) 모델
+
 - 입력 : 크롤링한 가사 한 구절, 출력 : 아티스트 명
 - 데이터 수집 : 멜론 노래 가사 및 정보 크롤링
 - 구현 방법 : Hugging Face의 BERT 모델을 '기반(Base)'으로 가져온 뒤, 그 위에 '분류용 헤드(Head)' 레이어를 nn.Module을 사용해 직접 구현
@@ -231,7 +248,3 @@ python demo.py
 - 평가 지표 : 정확도(Accuracy)
 
 </details>
-
-
-
-
