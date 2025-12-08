@@ -145,8 +145,11 @@ def greedy_decode(model, tokenizer, text, device, max_len=50):
 def main():
     """메인 학습 함수"""
     print("=" * 60)
-    print("Spell Correction Seq2Seq 모델 학습")
+    print("Spell Correction Seq2Seq 모델 학습 (Vanilla LSTM)")
     print("=" * 60)
+    
+    # 강제로 Vanilla 모드로 설정
+    Config.USE_ATTENTION = False
     
     # 설정 출력
     Config.print_config()

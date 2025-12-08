@@ -1,6 +1,6 @@
 # Spell Correction Seq2Seq Model (PyTorch)
 
-PyTorch 기반 Encoder–Decoder 구조를 사용해 **오타가 포함된 문장을 자동으로 교정하는 Seq2Seq 모델**입니다. LSTM 기반 Encoder–Decoder로 구현하고, Attention 사용하여 성능을 비교합니다.
+PyTorch 기반 Encoder–Decoder 구조를 사용해 **오타가 포함된 문장을 자동으로 교정하는 Seq2Seq 모델**입니다. LSTM 기반 Encoder–Decoder로 구현하고, Attention 사용하여 성능을 비교합니다. (Character-level)
 
 ---
 
@@ -34,21 +34,6 @@ https://www.kaggle.com/datasets/dariocioni/c4200m/data
 - 매우 좋음, 필수 핵심
 
 - 문장-level Seq2Seq
-
-#### 허깅 페이스 (torinriley/spell-correction)
-
-https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
-
-- misspelled → correct 단어
-
-- 단독으론 부족, 보조 데이터로 좋음
-
-- 단어-level correction
-
-“문장 단위 병렬 데이터(C4 200M Grammar Error Correction dataset)”을 메인으로 하고
-(단어 단위 오타 데이터(torinriley/spell-correction)는 사전학습 + augmentation에 추가)
-
-## 데이터셋
 
 ### ✔ 오타 합성(Synthetic Typo Generation)
 
@@ -245,8 +230,21 @@ python demo.py
 
 ---
 
-#### 데이터셋 후보 : C4 200M Grammar Error Correction dataset
+#### 데이터셋 후보 : C4 200M Grammar Error Correction dataset -> (문장 단위 병렬 데이터)
 
 https://www.kaggle.com/datasets/dariocioni/c4200m/data
+
+#### 허깅 페이스 (torinriley/spell-correction) -> (단어 단위 병렬 데이터)
+
+https://huggingface.co/datasets/torinriley/spell-correction/viewer?views%5B%5D=train&sql=--+The+SQL+console+is+powered+by+DuckDB+WASM+and+runs+entirely+in+the+browser.%0A--+Get+started+by+typing+a+query+or+selecting+a+view+from+the+options+below.%0ASELECT+*+FROM+train+LIMIT+10%3B
+
+- misspelled → correct 단어
+
+- 단독으론 부족, 보조 데이터로 좋음
+
+- 단어-level correction
+
+“문장 단위 병렬 데이터(C4 200M Grammar Error Correction dataset)”을 메인으로 하고
+(단어 단위 오타 데이터(torinriley/spell-correction)는 사전학습 + augmentation에 추가)
 
 </details>

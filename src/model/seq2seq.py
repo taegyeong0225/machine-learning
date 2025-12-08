@@ -93,12 +93,13 @@ class Seq2Seq(nn.Module):
         # cell: [num_layers, batch_size, hidden_dim]
         encoder_outputs, hidden, cell = self.encoder(src)
         
-        # 학습 모드인지 추론 모드인지 확인
-        if self.training and tgt is not None:
-            # 학습 모드: Teacher Forcing 사용
+        # 정답(tgt)이 주어지면 Loss 계산을 위해 forward_train 사용 (학습/검증 공통)
+        if tgt is not None:
+            # 학습/검증 모드: Teacher Forcing 비율에 따라 동작
+            # 검증 시에는 teacher_forcing_ratio=1.0으로 설정하여 정답을 넣어줌
             return self._forward_train(src, tgt, hidden, cell, teacher_forcing_ratio)
         else:
-            # 추론 모드: Greedy Decoding
+            # 추론 모드: Greedy Decoding (정답 없음)
             return self._forward_inference(src, hidden, cell, max_len)
     
     def _forward_train(self, src, tgt, hidden, cell, teacher_forcing_ratio):

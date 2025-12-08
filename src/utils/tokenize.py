@@ -40,25 +40,26 @@ class SimpleTokenizer:
     
     def build_vocab(self, texts):
         """
-        전체 문장 리스트를 받아 단어 빈도 기반 어휘집 구축
+        전체 문장 리스트를 받아 **글자(Character)** 빈도 기반 어휘집 구축
         
         Args:
             texts (list): 문장 리스트
         """
         if self.verbose:
-            print("[Vocab] 어휘집 생성 중...")
+            print("[Vocab] 어휘집 생성 중... (Character-level)")
         
         # None 또는 빈 문자열 방지
         for text in texts:
             if text:
-                self.word_freq.update(text.split())
+                # 글자 단위로 분리 (공백 포함)
+                self.word_freq.update(list(text.lower()))
         
-        # 가장 빈도 높은 단어부터 vocab_size만큼 추가
+        # 가장 빈도 높은 글자부터 vocab_size만큼 추가
         next_idx = len(self.word2idx)
         
-        for word, _ in self.word_freq.most_common(self.vocab_size - next_idx):
-            self.word2idx[word] = next_idx
-            self.idx2word[next_idx] = word
+        for char, _ in self.word_freq.most_common(self.vocab_size - next_idx):
+            self.word2idx[char] = next_idx
+            self.idx2word[next_idx] = char
             next_idx += 1
         
         if self.verbose:
@@ -66,19 +67,23 @@ class SimpleTokenizer:
     
     def encode(self, text):
         """
-        문장을 단어 단위로 ID 시퀀스로 변환
+        문장을 **글자 단위**로 ID 시퀀스로 변환
         
         Args:
             text (str): 입력 문장
         
         Returns:
-            list: 토큰 ID 시퀀스 [SOS, ...words..., EOS]
+            list: 토큰 ID 시퀀스 [SOS, ...chars..., EOS]
         """
-        words = text.split() if text else []
+        if not text:
+            return []
+            
+        # 소문자 변환 후 글자 단위 분리
+        chars = list(text.lower())
         ids = [self.word2idx['<SOS>']]
         
-        for w in words:
-            ids.append(self.word2idx.get(w, self.word2idx['<UNK>']))
+        for c in chars:
+            ids.append(self.word2idx.get(c, self.word2idx['<UNK>']))
         
         ids.append(self.word2idx['<EOS>'])
         return ids
@@ -95,10 +100,10 @@ class SimpleTokenizer:
         """
         tokens = []
         for idx in ids:
-            word = self.idx2word.get(idx, '<UNK>')
-            if word not in ['<SOS>', '<EOS>', '<PAD>']:
-                tokens.append(word)
-        return " ".join(tokens)
+            char = self.idx2word.get(idx, '<UNK>')
+            if char not in ['<SOS>', '<EOS>', '<PAD>']:
+                tokens.append(char)
+        return "".join(tokens)  # 글자 단위이므로 공백 없이 연결
     
     def get_vocab_size(self):
         """어휘 크기 반환"""
@@ -192,5 +197,5 @@ if __name__ == "__main__":
     test_decoded = loaded_tokenizer.decode(test_encoded)
     print(f"\n로드 후 디코딩: {test_decoded}")
     
-    print("\n✅ SimpleTokenizer 테스트 완료!")
+    print("\n SimpleTokenizer 테스트 완료!")
 

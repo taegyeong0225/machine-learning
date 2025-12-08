@@ -157,4 +157,4 @@ if __name__ == "__main__":
     print(f"  - 전체: {total_params:,}")
     print(f"  - 학습 가능: {trainable_params:,}")
     
-    print("\n✅ Decoder 테스트 완료!")
+    print("\n Decoder 테스트 완료!")
