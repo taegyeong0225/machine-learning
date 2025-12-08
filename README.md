@@ -35,6 +35,14 @@ https://www.kaggle.com/datasets/dariocioni/c4200m/data
 
 - 문장-level Seq2Seq
 
+- error_type
+
+- 다중 오류       0.712850
+- 단일 단어 오타    0.276050
+- 변경 없음       0.011050
+- 단어 추가/삭제    0.000025
+- 데이터 없음      0.000025
+
 ### ✔ 오타 합성(Synthetic Typo Generation)
 
 오타 생성 규칙:
